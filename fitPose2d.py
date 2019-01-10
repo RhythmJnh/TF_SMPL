@@ -107,14 +107,6 @@ def fit(img, j2ds, prior_path, model_dir, gen='n', camProject=None):
 	optimizer = scipy_pt(loss=loss, var_list=[param_rot, camProject.trans], options={'ftol':0.001, 'maxiter':50, 'disp':False}, method='L-BFGS-B')
 	optimizer.minimize(sess, fetches = [j2ds_model], loss_callback=ls)
 
-	# # Rigid
-	# objs = {}
-	# for idx, j in enumerate(torso_ids):
-	# 	objs['j2d_%d' % idx] = tf.reduce_sum(tf.square(j2ds_model[j] - j2ds[j]))
-	# loss = tf.reduce_mean(objs.values())
-	# optimizer = scipy_pt(loss=loss, var_list=[param_rot, param_trans], options={'ftol':0.001, 'maxiter':100, 'disp':False}, method='L-BFGS-B')
-	# optimizer.minimize(sess, fetches = [j2ds_model], loss_callback=ls)
-
 	# Non Rigid
 	objs = {}
 	pose_diff = tf.reshape(param_pose - pose_mean, [1, -1])
