@@ -150,7 +150,7 @@ def main():
 	# Path
 	img_dir     = './data/img'
 	pose2d_dir  = './data/pose2d'
-	cam_path    = './data/camera/camera.mat'
+	# cam_path    = './data/camera/camera.mat'
 	prior_path  = './data/prior/genericPrior.mat'
 	model_dir   = './data/models'
 	out_path    = './output'
@@ -158,7 +158,6 @@ def main():
 	# Load camera
 	# camRender, camProject = load_cam(cam_path)
 	# print camRender.t, camRender.R_angles
-	# a==0
 
 	img_files = os.listdir(img_dir)
 	idx = args.idx
