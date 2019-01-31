@@ -123,14 +123,6 @@ def fit(img, j2ds, prior_path, model_dir, gen='n', camProject=None):
 	optimizer = scipy_pt(loss=loss, var_list=[param_rot, camProject.trans], options={'ftol':0.001, 'maxiter':50, 'disp':False}, method='L-BFGS-B')
 	optimizer.minimize(sess, fetches = [j2ds_model], loss_callback=ls)
 
-	# # Rigid
-	# objs = {}
-	# for idx, j in enumerate(torso_ids):
-	# 	objs['j2d_%d' % idx] = tf.reduce_sum(tf.square(j2ds_model[j] - j2ds[j]))
-	# loss = tf.reduce_mean(objs.values())
-	# optimizer = scipy_pt(loss=loss, var_list=[param_rot, param_trans], options={'ftol':0.001, 'maxiter':100, 'disp':False}, method='L-BFGS-B')
-	# optimizer.minimize(sess, fetches = [j2ds_model], loss_callback=ls)
-
 	# Non Rigid
 	objs = {}
 	pose_diff = tf.reshape(param_pose - pose_mean, [1, -1])
@@ -148,14 +140,14 @@ def fit(img, j2ds, prior_path, model_dir, gen='n', camProject=None):
 	pose, betas, trans = sess.run([tf.concat([param_rot, param_pose], axis=1), param_shape, param_trans])
 	verts = verts - trans
 	model_params = {'trans': trans,
-					'pose': pose,
-					'shape': betas}	
+			'pose': pose,
+			'shape': betas}	
 
 	t = sess.run(camProject.trans)
 	camRender = {'f': np.array([flength, flength]),
-				 'c': center,
-				 't': np.array(t),
-				 'rt': rt}
+		     'c': center,
+		     't': np.array(t),
+		     'rt': rt}
 	sess.close()
 	del sess
 	return model_params, verts, faces, camRender
@@ -189,7 +181,7 @@ def main():
 		img, j2ds = load_data(img_path, pose2d_path)
 
 		model_params, verts, faces, camRender = fit(img, j2ds, prior_path, 
-										 model_dir, gen=gen)#, camProject=camProject)
+							    model_dir, gen=gen)#, camProject=camProject)
 		t1 = time()
 		print ('Run time: %.05fs' % (t1-t0))
 
@@ -199,17 +191,16 @@ def main():
 		# dist = np.abs((camRender.t[2]/1000.) - np.mean(verts, axis=0)[2])
 		dist = np.abs((camRender['t'][2]) - np.mean(verts, axis=0)[2])
 		res = (render_model(verts, faces, w, h, 
-							camRender, far=20+dist, img=img) * 255.).astype('uint8')
+		       camRender, far=20+dist, img=img) * 255.).astype('uint8')
 
 		# Save
 		out_img = os.path.join(out_path, 'img')
 		cv2.imwrite(os.path.join(out_img, i), res)
-		# cv2.imshow('test', res)
-		# cv2.waitKey(0)
+		cv2.imshow('test', res)
+		cv2.waitKey(0)
 		save_to_obj(verts, faces, os.path.join(out_img.replace('img', 'obj'), i.replace('.png', '.obj')))
 		save_to_pkl(model_params, os.path.join(out_img.replace('img', 'pkl'), i.replace('.png', '.pkl')))
 		print ('Done..')
-		# break
 
 
 if __name__ == '__main__':
