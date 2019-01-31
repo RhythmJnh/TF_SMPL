@@ -7,8 +7,9 @@
 
 # Usage
   Download the model, (http://smpl.is.tue.mpg.de/downloads).  
-  Run gensh.sh.  
+  Run gensh.sh, and then run generate_video.py to generate a video.  
     `sh gensh.sh`  
+    `python generate_video.py`  
   If you want to use your own data, you need provide image and the corresponding 2D joints.  
   You can use [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) or something similar to get 2D joints.  
   Please find more details in this code.
